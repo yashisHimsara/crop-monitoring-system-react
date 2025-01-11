@@ -3,6 +3,11 @@ import {Crop} from "./pages/Crop.tsx";
 import {RootLayout} from "./components/RootLayout.tsx";
 import {React} from "react";
 import {Equipment} from "./pages/Equipment.tsx";
+import {Monitoring} from "./pages/Monitoring.tsx";
+import {Field} from "./pages/Field.tsx";
+import {Staff} from "./pages/Staff.tsx";
+import {User} from "./pages/User.tsx";
+import {Vehicle} from "./pages/Vehicle.tsx";
 
 function App() {
 
@@ -13,15 +18,18 @@ function App() {
             children : [
                 { path : '/crop', element : <Crop/>},
                 { path : '/equipment', element : <Equipment/>},
-
+                { path : '/monitoringLog', element : <Monitoring/>},
+                { path : '/field', element : <Field/>},
+                { path : '/staff', element : <Staff/>},
+                { path : '/user', element : <User/>},
+                { path : 'vehicle', element : <Vehicle/>},
             ]
         },
     ])
 
     return (
         <>
-            <h1>HIIIIIII</h1>
-                <RouterProvider router={routes} />
+            <RouterProvider router={routes} />
         </>
     );
 }

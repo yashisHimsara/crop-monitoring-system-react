@@ -1,119 +1,85 @@
-import {Link} from "react-router";
+import { Link } from "react-router";
 
 export function Navigation() {
     return (
-        <>
-            <header className="flex items-center justify-between bg-white p-4 shadow-md" id="header">
-                <div className="cursor-pointer text-xl" id="header-toggle">
-                    <i className="bx bx-menu"></i>
+        <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white">
+            <nav className="flex flex-col h-full">
+                {/* Logo and Brand */}
+                <div className="flex items-center px-6 py-4 bg-gray-900">
+                    <i className="bx bx-leaf text-2xl"></i>
+                    <span className="ml-4 text-lg font-semibold">Green Shadow</span>
                 </div>
-            </header>
-            <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white" id="nav-bar">
-                <nav className="flex flex-col h-full">
-                    <div>
-                        <a href="#" className="flex items-center px-6 py-4 text-white hover:bg-gray-700">
-                            <i className="bx bx-leaf text-2xl"></i>
-                            <span className="ml-4 text-lg font-semibold">Green Shadow</span>
-                        </a>
 
-                        <div className="mt-4">
-                            {/*<a id="UserBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bx-user-circle text-xl"></i>*/}
-                            {/*    <span className="ml-4">Users</span>*/}
-                            {/*</a>*/}
+                {/* Navigation Links */}
+                <div className="mt-4 flex-grow">
+                    <Link
+                        to="/user"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bx-user-circle text-xl"></i>
+                        <span className="ml-4">User</span>
+                    </Link>
 
-                            {/*<a id="vehicleBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bx-car text-xl"></i>*/}
-                            {/*    <span className="ml-4">Vehicle</span>*/}
-                            {/*</a>*/}
+                    <Link
+                        to="/vehicle"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bx-car text-xl"></i>
+                        <span className="ml-4">Vehicle</span>
+                    </Link>
 
-                            {/*<a id="staffBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bx-user text-xl"></i>*/}
-                            {/*    <span className="ml-4">Staff</span>*/}
-                            {/*</a>*/}
+                    <Link
+                        to="/staff"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bx-user text-xl"></i>
+                        <span className="ml-4">Staff</span>
+                    </Link>
 
-                            {/*<a id="fieldBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bx-square text-xl"></i>*/}
-                            {/*    <span className="ml-4">Fields</span>*/}
-                            {/*</a>*/}
+                    <Link
+                        to="/field"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bx-square text-xl"></i>
+                        <span className="ml-4">Field</span>
+                    </Link>
 
-                            {/*<a id="monitoringLogBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bx-detail text-xl"></i>*/}
-                            {/*    <span className="ml-4">Monitoring Log</span>*/}
-                            {/*</a>*/}
+                    <Link
+                        to="/monitoringLog"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bx-detail text-xl"></i>
+                        <span className="ml-4">Monitoring Log</span>
+                    </Link>
 
-                            {/*<a id="equipmentBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bx-wrench text-xl"></i>*/}
-                            {/*    <span className="ml-4">Equipments</span>*/}
-                            {/*</a>*/}
+                    <Link
+                        to="/equipment"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bx-wrench text-xl"></i>
+                        <span className="ml-4">Equipments</span>
+                    </Link>
 
-                            {/*<a id="cropBtn"*/}
-                            {/*   className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700">*/}
-                            {/*    <i className="bx bxs-florist text-xl"></i>*/}
-                            {/*    <span className="ml-4">Crops</span>*/}
-                            {/*</a>*/}
+                    <Link
+                        to="/crop"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                    >
+                        <i className="bx bxs-florist text-xl"></i>
+                        <span className="ml-4">Crops</span>
+                    </Link>
+                </div>
 
-                            <Link to='/vehicle'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                            >
-                                User
-                            </Link>
-
-                            <Link to='/vehicle'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                            >
-                                Vehicle
-                            </Link>
-
-                            <Link to='/staff'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                            >
-                                Staff
-                            </Link>
-
-                            <Link to='/field'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                            >
-                                Field
-                            </Link>
-
-                            <Link to='/monitoringLog'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                                  >
-                                Monitoring Log
-                            </Link>
-
-                            <Link to='/equipment'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                                  >
-                                Equipments
-                            </Link>
-
-                            <Link to='/crop'
-                                  className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
-                            >
-                                <i className="bx bxs-florist text-xl"></i>
-                                Crops
-                            </Link>
-                        </div>
-                    </div>
-
+                {/* Sign Out */}
+                <div className="mt-auto">
                     <a
-                        id="signOutBtn"
-                        className="mt-auto flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                        href="#"
+                        className="flex items-center px-6 py-3 text-gray-300 hover:text-white hover:bg-gray-700"
                     >
                         <i className="bx bx-log-out text-xl"></i>
-                        <span className="ml-4">SignOut</span>
+                        <span className="ml-4">Sign Out</span>
                     </a>
-                </nav>
-            </div>
-
-        </>
-    )
+                </div>
+            </nav>
+        </div>
+    );
 }

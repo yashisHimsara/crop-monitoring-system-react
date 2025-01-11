@@ -72,8 +72,6 @@ export function Staff(){
                 </div>
             </div>
 
-            <!-- Add additional rows similar to the above for the rest of your fields -->
-
             <div className="flex justify-start space-x-4 mt-6">
                 <button id="saveStaffMember" type="button"
                         className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Save
