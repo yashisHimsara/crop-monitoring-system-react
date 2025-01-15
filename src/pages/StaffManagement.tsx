@@ -121,7 +121,7 @@ export default function StaffManagement() {
     ];
 
     return (
-        <div className="max-w-5xl mx-auto p-6 bg-white rounded-md shadow-md">
+        <div className="max-w-10xl mx-auto p-6 bg-white rounded-md shadow-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Staff Management</h2>
             <form onSubmit={handleSave}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
