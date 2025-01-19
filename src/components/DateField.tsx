@@ -8,13 +8,14 @@ interface DateFieldProps {
     required?: boolean;
 }
 
-const DateField: React.FC<DateFieldProps> = ({
-                                                 id,
-                                                 label,
-                                                 value,
-                                                 onChange,
-                                                 required = false,
-                                             }) => {
+const DateField: React.FC<DateFieldProps> =
+    ({
+         id,
+         label,
+         value,
+         onChange,
+         required = false,
+     }) => {
     return (
         <div className="mb-4">
             <label
