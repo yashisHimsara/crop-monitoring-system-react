@@ -6,43 +6,6 @@ import Modal from "../components/Modal";
 
 export default function StaffManagement() {
 
-    /*const sampleStaffData = [
-        {
-            id: "E001",
-            firstName: "John",
-            lastName: "Doe",
-            designation: "Manager",
-            address: "123 Main St, Springfield",
-            contact: "123-456-7890",
-            gender: "Male",
-            joinedDate: "2021-03-15",
-            email: "john.doe@example.com",
-        },
-        {
-            id: "E002",
-            firstName: "Jane",
-            lastName: "Smith",
-            designation: "Developer",
-            address: "456 Elm St, Springfield",
-            contact: "987-654-3210",
-            gender: "Female",
-            joinedDate: "2020-07-21",
-            email: "jane.smith@example.com",
-        },
-        {
-            id: "E003",
-            firstName: "Alice",
-            lastName: "Johnson",
-            designation: "Designer",
-            address: "789 Oak St, Springfield",
-            contact: "555-123-4567",
-            gender: "Female",
-            joinedDate: "2019-11-02",
-            email: "alice.johnson@example.com",
-        },
-    ];*/
-
-
 
     const [employeeId, setEmployeeId] = useState("");
     const [firstName, setFirstName] = useState("");
