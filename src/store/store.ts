@@ -3,8 +3,8 @@ import Crop from "../reducers/Crop";
 import Equipment from "../reducers/Equipment";
 import Field from "../reducers/Field";
 import Log from "../reducers/Log";
-import Employee from "../reducers/Employee";
-import {Vehicle} from "../reducers/Vehicle.ts";
+import Staff from "../reducers/Staff.ts";
+import Vehicle from "../reducers/Vehicle.ts";
 
 export const store = configureStore({
     reducer: {
@@ -12,7 +12,7 @@ export const store = configureStore({
         equipment: Equipment,
         field: Field,
         log: Log,
-        employee: Employee,
+        employee: Staff(),
         vehicle: Vehicle,
     },
 });

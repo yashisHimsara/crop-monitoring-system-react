@@ -1,70 +1,26 @@
-import { Crop } from "../models/Crop";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {Crop} from "../models/Crop.ts";
 
-export const initialState: Crop[] = [];
+const initialState:Crop[]=[];
 
-const api = axios.create({
-    baseURL: "http://localhost:3002",
-});
-
-export const saveCrop = createAsyncThunk(
-    "crop/saveCrop",
-    async (crop: Crop) => {
-        try {
-            const response = await api.post("/add", crop);
-            return response.data;
-        } catch (error) {
-            return console.log("Error saving crop:", error);
-        }
-    }
-);
-
-export const deleteCrop = createAsyncThunk(
-    "crop/deleteCrop",
-    async (cropCode: string) => {
-        try {
-            await api.delete(`/delete/${cropCode}`);
-            return cropCode;
-        } catch (error) {
-            return console.log("Error deleting crop:", error);
-        }
-    }
-);
-
-const cropSlice = createSlice({
+const CropSlice=createSlice({
     name: "crop",
     initialState,
-    reducers: {
-        addCrop(state, action: PayloadAction<Crop>) {
+    reducers:{
+        addCrop:(state,action:PayloadAction<Crop>)=>{
             state.push(action.payload);
         },
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(saveCrop.fulfilled, (state, action) => {
-                state.push(action.payload);
-            })
-            .addCase(saveCrop.rejected, (state, action) => {
-                console.error("Failed to save crop:", action.payload);
-            })
-            .addCase(saveCrop.pending, () => {
-                console.log("Saving crop...");
-            });
+        deleteCrop: (state, action) => {
+            return state.filter(crop => crop.cropCode !== action.payload);
+        },
+        updateCrop: (state, action) => {
+            const index = state.findIndex(crop => crop.cropCode === action.payload.cropCode);
+            if (index !== -1) {
+                state[index] = action.payload;
+            }
+        }
+    }
+})
 
-        builder
-            .addCase(deleteCrop.pending, () => {
-                console.log("Pending crop deletion...");
-            })
-            .addCase(deleteCrop.fulfilled, (state, action) => {
-                console.log("Crop deletion fulfilled.");
-                return state.filter((crop: Crop) => crop.cropCode !== action.payload);
-            })
-            .addCase(deleteCrop.rejected, () => {
-                console.log("Error deleting crop.");
-            });
-    },
-});
-
-export const { addCrop } = cropSlice.actions;
-export default cropSlice.reducer;
+export const {addCrop,deleteCrop,updateCrop } = CropSlice.actions;
+export default CropSlice.reducer
