@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "../components/TextField";
 import DateField from "../components/DateField";
 import SelectField from "../components/SelectField";
 import InputTextWithImageUpload from "../components/InputTextWithImageUpload";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../store/store.tsx";
-import {addLog, deleteLog, updateLog} from "../redux/LogSlice.ts";
+import { RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { saveLog, getAllLogs, deleteLog, updateLog } from "../redux/LogSlice";
 
 interface Log {
     logCode: string;
@@ -20,7 +20,6 @@ interface Log {
 }
 
 export default function LogManagement() {
-
     const dispatch = useDispatch();
     const logs = useSelector((state: RootState) => state.log);
 
@@ -34,15 +33,18 @@ export default function LogManagement() {
         observedImage: "",
     });
 
-
-    // const [logs, setLogs] = useState(sampleLogData); // Initialize with empty array
-    const [selectedLog, setSelectedLog] = useState<Log | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLog, setSelectedLog] = useState<Log | null>(null);
     const [editingLog, setEditingLog] = useState<Log | null>(null);
+
+    // Fetch all logs on component mount
+    useEffect(() => {
+        dispatch(getAllLogs());
+    }, [dispatch]);
 
     const handleAddLog = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch(addLog(newLog));
+        dispatch(saveLog(newLog));
         setNewLog({
             logCode: "",
             logDate: "",
@@ -52,7 +54,6 @@ export default function LogManagement() {
             logDetails: "",
             observedImage: "",
         });
-        // clearForm();
     };
 
     const handleUpdateLog = (e: React.FormEvent) => {
@@ -70,11 +71,11 @@ export default function LogManagement() {
                 observedImage: "",
             });
         }
-    }
+    };
 
     const handleRowClick = (log: Log) => {
-        setEditingLog(log);
         setNewLog(log);
+        setEditingLog(log);
     };
 
     const handleDelete = (logCode: string) => {
@@ -91,8 +92,8 @@ export default function LogManagement() {
         setSelectedLog(null);
     };
 
-    const handkeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = event.target;
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
         setNewLog({ ...newLog, [id]: value });
     };
 
@@ -115,7 +116,6 @@ export default function LogManagement() {
         setNewLog({ ...newLog, observedImage: imgUrl });
     };
 
-
     const columns = [
         { header: "Log Code", accessor: "logCode" },
         { header: "Log Date", accessor: "logDate" },
@@ -127,12 +127,12 @@ export default function LogManagement() {
     const actions = [
         {
             label: "See More",
-            onClick: handleSeeMore,
+            onClick: (row: Log) => handleSeeMore(row),
             className: "bg-blue-600 text-white hover:bg-blue-700",
         },
         {
             label: "Delete",
-            onClick: (log: Log) => handleDelete(log.logCode),
+            onClick: (row: Log) => handleDelete(row.logCode),
             className: "bg-red-600 text-white hover:bg-red-700",
         },
     ];
@@ -147,21 +147,21 @@ export default function LogManagement() {
                         label="Log Code"
                         value={newLog.logCode}
                         placeholder="Enter log code"
-                        onChange={handkeInputChange}
+                        onChange={handleInputChange}
                         required
                     />
                     <DateField
                         id="logDate"
                         label="Log Date"
                         value={newLog.logDate}
-                        onChange={handkeInputChange}
+                        onChange={handleInputChange}
                         required
                     />
                     <SelectField
                         id="field"
                         label="Field"
                         value={newLog.field}
-                        options={["Field A", "Field B", "Field C"]} // Replace with dynamic options
+                        options={["Field A", "Field B", "Field C"]}
                         onChange={handleFieldChange}
                         required
                     />
@@ -169,7 +169,7 @@ export default function LogManagement() {
                         id="crop"
                         label="Crop"
                         value={newLog.crop}
-                        options={["Crop X", "Crop Y", "Crop Z"]} // Replace with dynamic options
+                        options={["Crop X", "Crop Y", "Crop Z"]}
                         onChange={handleCropChange}
                         required
                     />
@@ -177,7 +177,7 @@ export default function LogManagement() {
                         id="staff"
                         label="Staff"
                         value={newLog.staff}
-                        options={["Staff 1", "Staff 2", "Staff 3"]} // Replace with dynamic options
+                        options={["Staff 1", "Staff 2", "Staff 3"]}
                         onChange={handleStaffChange}
                         required
                     />
@@ -186,7 +186,7 @@ export default function LogManagement() {
                         label="Log Details"
                         value={newLog.logDetails}
                         placeholder="Enter log details"
-                        onChange={handkeInputChange}
+                        onChange={handleInputChange}
                         required
                     />
                     <InputTextWithImageUpload
@@ -201,7 +201,7 @@ export default function LogManagement() {
                     Add Log
                 </button>
                 <button
-                    type="submit"
+                    type="button"
                     className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md mr-4"
                     onClick={handleUpdateLog}
                 >
@@ -210,13 +210,13 @@ export default function LogManagement() {
             </form>
 
             <div className="mt-8">
-                <Table columns={columns} data={logs} actions={actions} onRowClick={handleRowClick}/>
+                <Table columns={columns} data={logs} actions={actions} onRowClick={handleRowClick} />
             </div>
 
             {selectedLog && (
                 <Modal
                     isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={handleCloseModal}
                     title="Log Details"
                 >
                     <div className="space-y-4">

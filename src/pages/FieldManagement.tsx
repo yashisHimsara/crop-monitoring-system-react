@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import Modal from "../components/Modal";
+import React, { useState, useEffect } from "react";
 import TextField from "../components/TextField";
 import SelectField from "../components/SelectField";
+import DateField from "../components/DateField";
 import InputTextWithImageUpload from "../components/InputTextWithImageUpload";
-import { useDispatch, useSelector } from "react-redux";
+import Table from "../components/Table";
+import Modal from "../components/Modal";
 import { RootState } from "../store/store";
-import { addField, deleteField, updateField } from "../redux/FieldSlice";
-import Table from "../components/Table"; // Import the Table component
+import { useDispatch, useSelector } from "react-redux";
+import { saveField, getAllFields, deleteField, updateField } from "../redux/FieldSlice";
 
 interface Field {
     fieldCode: string;
@@ -16,6 +17,7 @@ interface Field {
     crops: string;
     staff: string;
     image: string;
+    dateAdded: string; // New field for date
 }
 
 export default function FieldManagement() {
@@ -30,53 +32,38 @@ export default function FieldManagement() {
         crops: "",
         staff: "",
         image: "",
+        dateAdded: "", // Initialize date field
     });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedField, setSelectedField] = useState<Field | null>(null);
     const [editingField, setEditingField] = useState<Field | null>(null);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = e.target;
-        setNewField({ ...newField, [id]: value });
-    };
+    // Fetch all fields on component mount
+    useEffect(() => {
+        dispatch(getAllFields());
+    }, [dispatch]);
 
-    const handleCropsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { value } = e.target;
-        setNewField({ ...newField, crops: value });
-    };
-
-    const handleStaffChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { value } = e.target;
-        setNewField({ ...newField, staff: value });
-    };
-
-    const handleImageChange = (imageUrl: string) => {
-        setNewField({ ...newField, image: imageUrl });
-    };
-
-    const handleAddField = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (newField.fieldCode && newField.fieldName) {
-            dispatch(addField(newField));
-            setNewField({
-                fieldCode: "",
-                fieldName: "",
-                fieldLocation: "",
-                size: "",
-                crops: "",
-                staff: "",
-                image: "",
-            });
-        }
+    const handleAddField = (event: React.FormEvent) => {
+        event.preventDefault();
+        dispatch(saveField(newField));
+        setNewField({
+            fieldCode: "",
+            fieldName: "",
+            fieldLocation: "",
+            size: "",
+            crops: "",
+            staff: "",
+            image: "",
+            dateAdded: "",
+        });
     };
 
     const handleUpdateField = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (editingField) {
-            dispatch(updateField(newField)); // Dispatch update action
-            setEditingField(null); // Reset editing state
+            dispatch(updateField(newField));
+            setEditingField(null);
             setNewField({
                 fieldCode: "",
                 fieldName: "",
@@ -85,13 +72,18 @@ export default function FieldManagement() {
                 crops: "",
                 staff: "",
                 image: "",
+                dateAdded: "",
             });
         }
     };
 
     const handleRowClick = (field: Field) => {
         setNewField(field);
-        setEditingField(field); // Store the field being edited
+        setEditingField(field);
+    };
+
+    const handleDelete = (fieldCode: string) => {
+        dispatch(deleteField(fieldCode));
     };
 
     const handleSeeMore = (field: Field) => {
@@ -99,53 +91,61 @@ export default function FieldManagement() {
         setIsModalOpen(true);
     };
 
-    const handleDeleteField = (fieldCode: string) => {
-        dispatch(deleteField(fieldCode));
-    };
-
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedField(null);
     };
 
-    // Sample options for SelectField components
-    const cropOptions = ["Wheat", "Rice", "Corn"];
-    const staffOptions = ["John Doe", "Jane Smith", "Alice Johnson"];
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        setNewField({ ...newField, [id]: value });
+    };
 
-    // Table Columns
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { id, value } = e.target;
+        setNewField({ ...newField, [id]: value });
+    };
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setNewField({ ...newField, dateAdded: value });
+    };
+
+    const handleImageChange = (imageUrl: string) => {
+        setNewField({ ...newField, image: imageUrl });
+    };
+
     const columns = [
         { header: "Field Code", accessor: "fieldCode" },
         { header: "Field Name", accessor: "fieldName" },
         { header: "Crops", accessor: "crops" },
         { header: "Staff", accessor: "staff" },
+        { header: "Date Added", accessor: "dateAdded" },
     ];
 
-    // Table Actions
     const actions = [
         {
             label: "See More",
             onClick: (row: Field) => handleSeeMore(row),
-            className: "bg-blue-600 text-white py-1 px-3 rounded-md",
+            className: "bg-blue-600 text-white hover:bg-blue-700",
         },
         {
             label: "Delete",
-            onClick: (row: Field) => handleDeleteField(row.fieldCode),
-            className: "bg-red-600 text-white py-1 px-3 rounded-md",
+            onClick: (row: Field) => handleDelete(row.fieldCode),
+            className: "bg-red-600 text-white hover:bg-red-700",
         },
     ];
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-white rounded-md shadow-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Field Management</h2>
-
-            {/* Input Form */}
-            <form onSubmit={handleAddField} className="mb-6">
-                <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleAddField}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <TextField
                         id="fieldCode"
                         label="Field Code"
                         value={newField.fieldCode}
-                        placeholder="Enter Field Code"
+                        placeholder="Enter field code"
                         onChange={handleInputChange}
                         required
                     />
@@ -153,7 +153,7 @@ export default function FieldManagement() {
                         id="fieldName"
                         label="Field Name"
                         value={newField.fieldName}
-                        placeholder="Enter Field Name"
+                        placeholder="Enter field name"
                         onChange={handleInputChange}
                         required
                     />
@@ -161,30 +161,39 @@ export default function FieldManagement() {
                         id="fieldLocation"
                         label="Field Location"
                         value={newField.fieldLocation}
-                        placeholder="Enter Field Location"
+                        placeholder="Enter field location"
                         onChange={handleInputChange}
+                        required
                     />
                     <TextField
                         id="size"
-                        label="Size of the Field"
+                        label="Size"
                         value={newField.size}
-                        placeholder="Enter Size of the Field"
+                        placeholder="Enter field size"
                         onChange={handleInputChange}
+                        required
                     />
                     <SelectField
                         id="crops"
                         label="Crops"
                         value={newField.crops}
-                        options={cropOptions}
-                        onChange={handleCropsChange}
+                        options={["Wheat", "Corn", "Rice"]}
+                        onChange={handleSelectChange}
                         required
                     />
                     <SelectField
                         id="staff"
                         label="Staff"
                         value={newField.staff}
-                        options={staffOptions}
-                        onChange={handleStaffChange}
+                        options={["John Doe", "Jane Smith", "Alice Johnson"]}
+                        onChange={handleSelectChange}
+                        required
+                    />
+                    <DateField
+                        id="dateAdded"
+                        label="Date Added"
+                        value={newField.dateAdded}
+                        onChange={handleDateChange}
                         required
                     />
                     <InputTextWithImageUpload
@@ -192,6 +201,7 @@ export default function FieldManagement() {
                         onImageChange={handleImageChange}
                     />
                 </div>
+
                 <button
                     type="submit"
                     className="mt-4 bg-green-600 text-white px-4 py-2 rounded-md mr-4"
@@ -207,32 +217,29 @@ export default function FieldManagement() {
                 </button>
             </form>
 
-            {/* Table Section */}
-            <Table
-                columns={columns}
-                data={fields}
-                actions={actions}
-                onRowClick={handleRowClick} // Handle row clicks for editing
-            />
+            <div className="mt-8">
+                <Table columns={columns} data={fields} actions={actions} onRowClick={handleRowClick} />
+            </div>
 
-            {/* Modal */}
-            {isModalOpen && selectedField && (
-                <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Field Details">
-                    <div className="p-4">
-                        <h3 className="text-xl font-bold mb-4">Field Details</h3>
+            {selectedField && (
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    title="Field Details"
+                >
+                    <div className="space-y-4">
                         <p><strong>Field Code:</strong> {selectedField.fieldCode}</p>
                         <p><strong>Field Name:</strong> {selectedField.fieldName}</p>
                         <p><strong>Field Location:</strong> {selectedField.fieldLocation}</p>
                         <p><strong>Size:</strong> {selectedField.size}</p>
                         <p><strong>Crops:</strong> {selectedField.crops}</p>
                         <p><strong>Staff:</strong> {selectedField.staff}</p>
-                        <div className="my-4">
-                            <img
-                                src={selectedField.image}
-                                alt={selectedField.fieldName}
-                                className="w-32 h-32 object-cover rounded-md mt-2"
-                            />
-                        </div>
+                        <p><strong>Date Added:</strong> {selectedField.dateAdded}</p>
+                        <img
+                            src={selectedField.image}
+                            alt={selectedField.fieldName}
+                            className="w-32 h-32 object-cover rounded-md mt-2"
+                        />
                         <button
                             onClick={handleCloseModal}
                             className="bg-red-600 text-white px-4 py-2 rounded-md"

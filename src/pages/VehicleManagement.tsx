@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "../components/TextField";
 import SelectField from "../components/SelectField";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
 import { RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { addVehicle, deleteVehicle, updateVehicle } from "../redux/VehicleSlice";
+import { saveVehicle, getAllVehicles, deleteVehicle, updateVehicle } from "../redux/VehicleSlice";
 
 interface Vehicle {
     vehicleCode: string;
@@ -33,9 +33,14 @@ export default function VehicleManagement() {
     const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
     const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
+    // Fetch all vehicles on component mount
+    useEffect(() => {
+        dispatch(getAllVehicles());
+    }, [dispatch]);
+
     const handleAddVehicle = (event: React.FormEvent) => {
         event.preventDefault();
-        dispatch(addVehicle(newVehicle));
+        dispatch(saveVehicle(newVehicle));
         setNewVehicle({
             vehicleCode: "",
             licensePlate: "",

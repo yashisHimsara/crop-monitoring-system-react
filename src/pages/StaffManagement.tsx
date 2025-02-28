@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "../components/TextField";
 import SelectField from "../components/SelectField";
 import Table from "../components/Table";
 import Modal from "../components/Modal";
-import {RootState} from "../store/store.tsx";
-import {useDispatch, useSelector} from "react-redux";
-import {addEmployee, deleteEmployee, updateEmployee} from "../redux/StaffSlice.ts";
+import { RootState } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { saveEmployee, getAllEmployees, deleteEmployee, updateEmployee } from "../redux/StaffSlice";
 
 interface Employee {
     employeeId: string;
@@ -20,13 +20,6 @@ interface Employee {
 }
 
 export default function StaffManagement() {
-
-
-
-    // *if you need to check using sample data
-
-    // const [employees, setEmployees] = useState(sampleStaffData);
-
     const dispatch = useDispatch();
     const employees = useSelector((state: RootState) => state.staff);
 
@@ -42,31 +35,33 @@ export default function StaffManagement() {
         email: "",
     });
 
-    const [selectedEmployee, setSelectedEmployee] = useState<Employee|null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
     const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
 
-    const handleAddEmployee =(e: React.FormEvent) => {
-        e.preventDefault();
-        if (newEmployee.employeeId && newEmployee.firstName && newEmployee.designation && newEmployee.contact) {
-            dispatch(addEmployee(newEmployee));
-            setNewEmployee({
-                employeeId: "",
-                firstName: "",
-                lastName: "",
-                designation: "",
-                contact: "",
-                address: "",
-                gender: "",
-                joinedDate: "",
-                email: "",
-            });
-        }
-    }
+    // Fetch all employees on component mount
+    useEffect(() => {
+        dispatch(getAllEmployees());
+    }, [dispatch]);
+
+    const handleAddEmployee = (event: React.FormEvent) => {
+        event.preventDefault();
+        dispatch(saveEmployee(newEmployee));
+        setNewEmployee({
+            employeeId: "",
+            firstName: "",
+            lastName: "",
+            designation: "",
+            contact: "",
+            address: "",
+            gender: "",
+            joinedDate: "",
+            email: "",
+        });
+    };
 
     const handleUpdateEmployee = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (editingEmployee) {
             dispatch(updateEmployee(newEmployee));
             setEditingEmployee(null);
@@ -80,8 +75,13 @@ export default function StaffManagement() {
                 gender: "",
                 joinedDate: "",
                 email: "",
-            })
+            });
         }
+    };
+
+    const handleRowClick = (employee: Employee) => {
+        setNewEmployee(employee);
+        setEditingEmployee(employee);
     };
 
     const handleDelete = (employeeId: string) => {
@@ -91,6 +91,11 @@ export default function StaffManagement() {
     const handleSeeMore = (employee: Employee) => {
         setSelectedEmployee(employee);
         setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedEmployee(null);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,29 +113,6 @@ export default function StaffManagement() {
         setNewEmployee({ ...newEmployee, gender: value });
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedEmployee(null);
-    };
-
-    const handleRowClick = (employee: Employee) => {
-        setNewEmployee(employee);
-        setEditingEmployee(employee); // Store the crop being edited
-
-    };
-
-    /*const clearForm = () => {
-        setEmployeeId("");
-        setFirstName("");
-        setLastName("");
-        setDesignation("");
-        setContact("");
-        setAddress("");
-        setGender("");
-        setJoinedDate("");
-        setEmail("");
-    };*/
-
     const columns = [
         { header: "Employee ID", accessor: "employeeId" },
         { header: "First Name", accessor: "firstName" },
@@ -141,12 +123,12 @@ export default function StaffManagement() {
     const actions = [
         {
             label: "See More",
-            onClick: handleSeeMore,
+            onClick: (row: Employee) => handleSeeMore(row),
             className: "bg-blue-600 text-white hover:bg-blue-700",
         },
         {
             label: "Delete",
-            onClick: (employee: Employee) => handleDelete(employee.employeeId), // Ensure employeeId is passed correctly
+            onClick: (row: Employee) => handleDelete(row.employeeId),
             className: "bg-red-600 text-white hover:bg-red-700",
         },
     ];
@@ -226,28 +208,29 @@ export default function StaffManagement() {
                     />
                 </div>
 
-                    <button
-                        type="submit"
-                        className="mt-4 bg-green-600 text-white px-4 py-2 rounded-md mr-4"
-                    >
-                        Add Employee
-                    </button>
-                    <button
-                        type="button"
-                        className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md mr-4"
-                        onClick={handleUpdateEmployee}
-                    >
-                        Update Employee
-                    </button>
-
+                <button
+                    type="submit"
+                    className="mt-4 bg-green-600 text-white px-4 py-2 rounded-md mr-4"
+                >
+                    Add Employee
+                </button>
+                <button
+                    type="button"
+                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md mr-4"
+                    onClick={handleUpdateEmployee}
+                >
+                    Update Employee
+                </button>
             </form>
+
             <div className="mt-8">
-                <Table columns={columns} data={employees} actions={actions} onRowClick={handleRowClick}/>
+                <Table columns={columns} data={employees} actions={actions} onRowClick={handleRowClick} />
             </div>
+
             {selectedEmployee && (
                 <Modal
                     isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={handleCloseModal}
                     title="Employee Details"
                 >
                     <div className="space-y-4">
